@@ -2,7 +2,7 @@
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_ttf.h"
 #include <string>
-
+#include <iostream>
 //Screen attributes
 const int SCREEN_WIDTH  = 640;
 const int SCREEN_HEIGHT = 480;
@@ -60,10 +60,10 @@ bool init()
 	return true;
 }
 
-bool load_files()
+bool load_files(std::string fontname, std::string imagename)
 {
-	background = load_image("background.png");
-	font = TTF_OpenFont("consola.ttf",28);
+	background = load_image(imagename.c_str());
+	font = TTF_OpenFont(fontname.c_str(),28);
 
 	if (background == NULL || font == NULL) return false;
 	return true;
@@ -78,12 +78,18 @@ void clean_up()
 	SDL_Quit();
 }
 
-int main(int argc, char* args[])
+int main(int argc, char* argv[])
 {
 	bool quit = false;
+
+	if (argc != 3)
+	{
+		std::cout << "Usage : fonts_sdl <fontname> <image name>\n";
+		return 1;
+	}
+
 	if (init() == false) return 1;
-	
-	if (load_files() == false) return 1;
+	if (load_files(argv[1],argv[2]) == false) return 1;
 	
 	//Render the tex
 	message = TTF_RenderText_Solid(font,"The quick brown fox jumps over the lazy dog",textcolor);
